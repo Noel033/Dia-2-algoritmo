@@ -1,9 +1,9 @@
 cursos = [
-    {"codigo": "MAT101", "nombre": "Matemáticas I", "hora_inicio": "08:00"},
-    {"codigo": "FIS202", "nombre": "Física II", "hora_inicio": "10:30"},
-    {"codigo": "PROG305", "nombre": "Programación Avanzada", "hora_inicio": "09:15"},
-    {"codigo": "HIST110", "nombre": "Historia Universal", "hora_inicio": "07:45"},
-    {"codigo": "QUIM150", "nombre": "Química General", "hora_inicio": "14:00"}
+    {"codigo": "ALG101", "nombre": "Algoritmo y Estructura de Datos II", "hora_inicio": "15:30"},
+    {"codigo": "FIS202", "nombre": "Física II", "hora_inicio": "17:00"},
+    {"codigo": "EST305", "nombre": "Estadística y Probabilidades II", "hora_inicio": "09:30"},
+    {"codigo": "MICRO110", "nombre": "Microeconomia", "hora_inicio": "10:15"},
+    {"codigo": "TECN50", "nombre": "Tecnología de Información II", "hora_inicio": "08:45"}
 ]
 def merge_sort(lista):
     if len(lista) <= 1:
@@ -46,6 +46,33 @@ resultado = buscar_por_hora(cursos_ordenados, hora_usuario)
 if resultado:                   
     print("\nCursos encontrados:")
     for c in resultado:           
-        print(c)
+        print({
+            "CODIGO": c["codigo"].upper(),
+            "NOMBRE": c["nombre"].upper(),
+            "HORA_INICIO": c["hora_inicio"].upper()
+        })
 else:                            
     print("No se encontró ningún curso a esa hora.")
+    
+    
+def agregar_curso(lista):
+    codigo = input("Ingrese el código del curso: ")
+    nombre = input("Ingrese el nombre del curso: ")
+    hora = input("Ingrese la hora de inicio (HH:MM): ")
+    nuevo = {
+        "codigo": codigo,
+        "nombre": nombre,
+        "hora_inicio": hora
+    }
+    lista.append(nuevo)   
+    print("\nCurso agregado con éxito.\n")
+    cursos_ordenados = merge_sort(lista) 
+    print("Cursos después de agregar:")
+    for c in cursos_ordenados:
+        print({
+            "CODIGO": c["codigo"].upper(),
+            "NOMBRE": c["nombre"].upper(),
+            "HORA_INICIO": c["hora_inicio"].upper()
+        })
+agregar_curso(cursos)
+ 
