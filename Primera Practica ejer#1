@@ -1,0 +1,156 @@
+class HistorialNavegacion:
+    class Nodo:
+        def __init__(self, url, titulo, fecha_hora):
+            self.url = url                
+            self.titulo = titulo          
+            self.fecha_hora = fecha_hora  
+            self.anterior = None         
+            self.siguiente = None         
+    def __init__(self):
+        self.actual = None
+        self.inicio = None    
+        self.fin = None     
+    
+    # a) Agregar nueva página
+    def agregar_pagina(self, url, titulo, fecha_hora):
+        nuevo_nodo = self.Nodo(url, titulo, fecha_hora) 
+        if not self.inicio:
+            self.inicio = self.fin = self.actual = nuevo_nodo
+        else:
+            if self.actual and self.actual.siguiente:
+                self.actual.siguiente = None  
+                self.fin = self.actual        
+            nuevo_nodo.anterior = self.fin   
+            self.fin.siguiente = nuevo_nodo   
+            self.fin = nuevo_nodo            
+            self.actual = nuevo_nodo         
+    
+    # b) Retroceder
+    def retroceder(self):
+        if self.actual and self.actual.anterior:
+            self.actual = self.actual.anterior  
+            return True                        
+        return False                          
+    
+    # c) Avanzar
+    def avanzar(self):
+        if self.actual and self.actual.siguiente:
+            self.actual = self.actual.siguiente  
+            return True                         
+        return False                           
+    
+    # d) Eliminar por URL
+    def eliminar_por_url(self, url):
+        nodo = self.inicio  
+        while nodo:
+            if nodo.url == url:
+                if nodo.anterior:
+                    nodo.anterior.siguiente = nodo.siguiente
+                else:
+                    self.inicio = nodo.siguiente
+                if nodo.siguiente:
+                    nodo.siguiente.anterior = nodo.anterior
+                else:
+                    self.fin = nodo.anterior
+                if nodo == self.actual:
+                    self.actual = nodo.anterior or nodo.siguiente
+                return True  
+            nodo = nodo.siguiente 
+        return False 
+    
+    # e) Buscar
+    def buscar_pagina(self, texto):
+        nodo = self.inicio         
+        resultados = []   
+        while nodo:
+            if (texto.lower() in nodo.url.lower() or
+                texto.lower() in nodo.titulo.lower()):
+                resultados.append({
+                    "url": nodo.url,
+                    "titulo": nodo.titulo,
+                    "fecha_hora": nodo.fecha_hora
+                })
+            nodo = nodo.siguiente  
+        return resultados  
+    
+    # f) Mostrar historial completo
+    def mostrar_historial_completo(self):
+        print("\nHistorial completo de navegación:")
+        nodo = self.inicio   
+        contador = 1   
+        while nodo:
+            marca = " <- ACTUAL" if nodo == self.actual else ""
+            print(str(contador) + ". " + nodo.titulo +
+                  " (" + nodo.url + ") - " + nodo.fecha_hora + marca)
+            nodo = nodo.siguiente  
+            contador += 1          
+        if not self.inicio:
+            print("El historial está vacío")
+
+
+
+navegador = HistorialNavegacion() 
+
+historial = [
+    ("google.com", "Google", "10:00 AM"),
+    ("wikipedia.org", "Wikipedia", "10:05 AM"),
+    ("github.com", "GitHub", "10:10 AM"),
+    ("stackoverflow.com", "Stack Overflow", "10:15 AM")
+]
+
+for url, titulo, hora in historial:
+    navegador.agregar_pagina(url, titulo, hora)
+
+# Menú interactivo
+while True:
+    print("\n=== MENÚ HISTORIAL DE NAVEGACIÓN ===")
+    print("1. Agregar nueva página")
+    print("2. Retroceder")
+    print("3. Avanzar")
+    print("4. Eliminar página por URL")
+    print("5. Buscar página")
+    print("6. Mostrar historial completo")
+    print("7. Salir")
+    
+    opcion = input("Elija una opción: ")  
+    if opcion == "1":
+        url = input("Ingrese URL: ")
+        titulo = input("Ingrese título: ")
+        hora = input("Ingrese hora de visita: ")
+        navegador.agregar_pagina(url, titulo, hora)
+        print("Página agregada con éxito.")
+ 
+    elif opcion == "2":
+        if navegador.retroceder():
+            print("Retrocediste a: " + navegador.actual.titulo)
+        else:
+            print("No puedes retroceder más.")
+
+    elif opcion == "3":
+        if navegador.avanzar():
+            print("Avanzaste a: " + navegador.actual.titulo)
+        else:
+            print("No puedes avanzar más.")
+   
+    elif opcion == "4":
+        url = input("Ingrese URL a eliminar: ")
+        if navegador.eliminar_por_url(url):
+            print("Página eliminada correctamente.")
+        else:
+            print("No se encontró la URL.")
+    elif opcion == "5":
+        texto = input("Ingrese texto para buscar: ")
+        resultados = navegador.buscar_pagina(texto)
+        if resultados:
+            print("\nPáginas encontradas:")
+            for r in resultados:
+                print("- " + r['titulo'] + " (" + r['url'] + ") - " + r['fecha_hora'])
+        else:
+            print("No se encontraron resultados.")
+    elif opcion == "6":
+        navegador.mostrar_historial_completo()
+    elif opcion == "7":
+        print("Saliendo del programa...")
+        break  
+    else:
+        print("Opción inválida. Intente otra vez.")
