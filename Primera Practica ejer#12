@@ -1,0 +1,51 @@
+cursos = [
+    {"codigo": "MAT101", "nombre": "Matemáticas I", "hora_inicio": "08:00"},
+    {"codigo": "FIS202", "nombre": "Física II", "hora_inicio": "10:30"},
+    {"codigo": "PROG305", "nombre": "Programación Avanzada", "hora_inicio": "09:15"},
+    {"codigo": "HIST110", "nombre": "Historia Universal", "hora_inicio": "07:45"},
+    {"codigo": "QUIM150", "nombre": "Química General", "hora_inicio": "14:00"}
+]
+def merge_sort(lista):
+    if len(lista) <= 1:
+        return lista
+        
+    mid = len(lista) // 2
+    izquierda = merge_sort(lista[:mid])     
+    derecha = merge_sort(lista[mid:])       
+    return merge(izquierda, derecha)
+def merge(izq, der):
+    resultado = []  
+    i, j = 0, 0    
+    while i < len(izq) and j < len(der):
+        if izq[i]["hora_inicio"] <= der[j]["hora_inicio"]:
+            resultado.append(izq[i])  
+            i += 1                    
+        else:
+            resultado.append(der[j])  
+            j += 1     
+    resultado.extend(izq[i:])
+    resultado.extend(der[j:])
+    return resultado
+def buscar_por_hora(lista, hora):
+    # para cada curso en la lista, si la hora es igual a la buscada lo guarda
+    encontrados = [curso for curso in lista if curso["hora_inicio"] == hora]
+    return encontrados
+
+print("\nCursos originales:")
+for c in cursos:         
+    print(c)
+
+cursos_ordenados = merge_sort(cursos)
+print("\nCursos ordenados por hora:")
+for c in cursos_ordenados:  
+    print(c)
+
+
+hora_usuario = input("\nIngrese una hora (HH:MM) para buscar: ")
+resultado = buscar_por_hora(cursos_ordenados, hora_usuario)
+if resultado:                   
+    print("\nCursos encontrados:")
+    for c in resultado:           
+        print(c)
+else:                            
+    print("No se encontró ningún curso a esa hora.")
