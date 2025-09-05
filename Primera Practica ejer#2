@@ -17,10 +17,10 @@ class HistorialNavegacion:
         if not self.inicio:
             self.inicio = self.fin = self.actual = nuevo_nodo
         else:
-            if self.actual and self.actual.siguiente:
-                self.actual.siguiente = None  
-                self.fin = self.actual        
-            nuevo_nodo.anterior = self.fin   
+            if self.actual and self.actual.siguiente:     #Si estabas en medio 
+                self.actual.siguiente = None               #(y había páginas hacia adelante)
+                self.fin = self.actual                      #se borran esas páginas.
+            nuevo_nodo.anterior = self.fin      #La nueva página se conecta después de la última
             self.fin.siguiente = nuevo_nodo   
             self.fin = nuevo_nodo            
             self.actual = nuevo_nodo         
@@ -44,13 +44,13 @@ class HistorialNavegacion:
         nodo = self.inicio  
         while nodo:
             if nodo.url == url:
-                if nodo.anterior:
-                    nodo.anterior.siguiente = nodo.siguiente
+                if nodo.anterior:                                 #reconecta los punteros
+                    nodo.anterior.siguiente = nodo.siguiente  
                 else:
                     self.inicio = nodo.siguiente
                 if nodo.siguiente:
-                    nodo.siguiente.anterior = nodo.anterior
-                else:
+                    nodo.siguiente.anterior = nodo.anterior           #ajusta
+                else: 
                     self.fin = nodo.anterior
                 if nodo == self.actual:
                     self.actual = nodo.anterior or nodo.siguiente
